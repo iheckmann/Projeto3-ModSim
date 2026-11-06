@@ -4,15 +4,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #PARÂMETROS
-m = #massa do bloco (kg)
-g = 9.81 #aceleração da gravidade (m/s²)
-v0 = #velocidade inicial (m/s)
-L = #comprimento do plano (m)
-h = #altura do plano em relação ao chão (m)
-k = #coeficiente de atrito (adimensional)
-p = 1.225 # densidade do ar (kg/m3)
-A = #área de seção transversal do bloco (m²)
-Cd = #coeficiente de resistência do ar (adimensional)
+m = 0.5 # massa do bloco (kg)
+mu = 0.3 # coeficiente de atrito cinético
+L = 1.0 # comprimento da mesa (m)
+h = 0.8 # altura da mesa (m)
+v0 = 3.0 # velocidade inicial (m/s)
+rho_ar = 1.225 # densidade do ar (kg/m3)
+Cd = 1.05 # coeficiente de arrasto
+A = 0.01 # área da seção transversal (m2)
+g = 9.81 # aceleração da gravidade (m/s2)
 
 #MODELO
 
@@ -21,6 +21,22 @@ def modelo(X, t):
     vx = X[1] #velocidade (m/s)
     y = X[2] #altura (m)
     vy = X[3] #velocidade vertical (m/s)
+
+    if y <= 0 and vy < 0:  # Condição para quando o bloco atinge o chão
+        dxdt = 0  # A posição horizontal não muda ao atingir o chão
+        dvxdt = 0  # A velocidade horizontal é zerada ao atingir o chão
+        dydt = 0  # A altura não muda ao atingir o chão
+        dvydt = 0  # A velocidade vertical é zerada ao atingir o chão
+        return [dxdt, dvxdt, dydt, dvydt]
+
+    dxdt = vx
+    dvxdt = -k/m - (1 / (2 * m)) * p * Cd * A * vx**2
+    # Gravidade e resistência do ar em Y
+    dydt = vy
+    dvydt = -g - (1 / (2 * m)) * p * Cd * A * np.sign(vy) * vy**2
+
+    return [dxdt, dvxdt, dydt, dvydt]
+
 
     dxdt = vx
     dvxdt = -k/m - (1/(2*m)) * p * Cd * A * vx**2

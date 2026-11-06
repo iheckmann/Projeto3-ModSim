@@ -27,7 +27,7 @@ def modelo(X, t):
     P = m * g
     if x <= L:          #fase 1 (mesa)
         N = P
-    else:               # fase 2 (queda)
+    else:               #fase 2 (queda)
         N = 0
     Fat = mu * N
     Far = (1/2) * p * A * Cd * v**2
@@ -57,13 +57,13 @@ def modelo(X, t):
     
 
 #CONDIÇÕES INICIAIS + SIMULAÇÃO DO MODELO
-lista_t = np.arange(0, 10, 0.1) #tempo de simulação (s)
-CI = [0, v0, h, 0] #condições iniciais --> ADICIONAR A ALTURA DA MESA
-solucao = odeint(modelo, CI, lista_t) #solução do modelo
-lista_x = solucao[:, 0] #posição (m)
-lista_vx = solucao[:, 1] #velocidade (m/s)
-lista_y = solucao[:, 2] #altura (m)
-lista_vy = solucao[:, 3] #velocidade vertical (m/s)
+lista_t = np.arange(0, 3, 1e-3) #ver quantos segundos o bloco leva para cair da mesa
+CI = [0, h, v0, 0]
+solucao = odeint(modelo, CI, lista_t)
+lista_x = solucao[:, 0]
+lista_y = solucao[:, 1]
+lista_vx = solucao[:, 2]
+lista_vy = solucao[:, 3]
 
 plt.figure()
 plt.plot(lista_t, lista_x, label='Posição (m)')

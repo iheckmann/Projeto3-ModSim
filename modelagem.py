@@ -4,45 +4,55 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #PARÂMETROS
-m = 0.5 # massa do bloco (kg)
-mu = 0.3 # coeficiente de atrito cinético
-L = 1.0 # comprimento da mesa (m)
-h = 0.8 # altura da mesa (m)
-v0 = 3.0 # velocidade inicial (m/s)
-rho_ar = 1.225 # densidade do ar (kg/m3)
-Cd = 1.05 # coeficiente de arrasto
-A = 0.01 # área da seção transversal (m2)
-g = 9.81 # aceleração da gravidade (m/s2)
+m = 0.5 #massa do bloco (kg)
+mu = 0.3 #coeficiente de atrito cinético
+L = 1.0 #comprimento da mesa (m)
+h = 0.8 #altura da mesa (m)
+v0 = 3.0 #velocidade inicial (m/s)
+p = 1.225 #densidade do ar (kg/m3)
+Cd = 1.05 #coeficiente de arrasto
+A = 0.01 #área da seção transversal (m2)
+g = 9.81 #aceleração da gravidade (m/s2)
 
 #MODELO
-
 def modelo(X, t):
-    x = X[0] #posição (m)
-    vx = X[1] #velocidade (m/s)
-    y = X[2] #altura (m)
-    vy = X[3] #velocidade vertical (m/s)
+    x = X[0]
+    y = X[1]
+    vx = X[2]
+    vy = X[3]
 
-    if y <= 0 and vy < 0:  # Condição para quando o bloco atinge o chão
-        dxdt = 0  # A posição horizontal não muda ao atingir o chão
-        dvxdt = 0  # A velocidade horizontal é zerada ao atingir o chão
-        dydt = 0  # A altura não muda ao atingir o chão
-        dvydt = 0  # A velocidade vertical é zerada ao atingir o chão
-        return [dxdt, dvxdt, dydt, dvydt]
+    v = sqrt(vx**2 + vy**2)
+
+    #Forças
+    P = m * g
+    if x <= L:          #fase 1 (mesa)
+        N = P
+    else:               # fase 2 (queda)
+        N = 0
+    Fat = mu * N
+    Far = (1/2) * p * A * Cd * v**2
+
+    #Bloco parou na mesa
+    if N > 0 and vx <= 0:
+        return 0, 0, 0, 0
+
+    #Direção da velocidade
+    if v > 0:
+        cos_a = vx / v
+        sen_a = vy / v
+    else:
+        cos_a = 0
+        sen_a = 0
+
+    #Resultante
+    Rx = -Fat - Far * cos_a
+    Ry = N - P - Far * sen_a
 
     dxdt = vx
-    dvxdt = -k/m - (1 / (2 * m)) * p * Cd * A * vx**2
-    # Gravidade e resistência do ar em Y
     dydt = vy
-    dvydt = -g - (1 / (2 * m)) * p * Cd * A * np.sign(vy) * vy**2
-
-    return [dxdt, dvxdt, dydt, dvydt]
-
-
-    dxdt = vx
-    dvxdt = -k/m - (1/(2*m)) * p * Cd * A * vx**2
-    dydt = vy
-    dvydt = -g - (1/(2*m)) * p * Cd * A * vy**2
-    dXdt = [dxdt, dvxdt, dydt, dvydt]
+    dvxdt = Rx / m
+    dvydt = Ry / m
+    dXdt = [dxdt, dydt, dvxdt, dvydt]
     return dXdt
     
 

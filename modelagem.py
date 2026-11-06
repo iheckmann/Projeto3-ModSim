@@ -65,6 +65,17 @@ lista_y = solucao[:, 1]
 lista_vx = solucao[:, 2]
 lista_vy = solucao[:, 3]
 
+plt.figure(figsize=(5, 5))
+plt.title("Trajetória $y(x)$", fontsize=16)
+plt.plot(lista_x, lista_y)
+plt.axvline(L, linestyle="--", color="purple")
+plt.ylabel("y (m)", fontsize=14)
+plt.xlabel("x (m)", fontsize=14)
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+plt.grid()
+plt.show()
+
 plt.figure()
 plt.plot(lista_t, lista_x, label='Posição (m)')
 plt.plot(lista_t, lista_y, label='Altura (m)')

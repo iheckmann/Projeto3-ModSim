@@ -53,9 +53,6 @@ plt.grid()
 plt.axis('equal')
 
 #TRAJETÓRIA DO BLOCO (COM E SEM ATRITO)
-# SEU CÓDIGO DO ITEM 2A
-
-# 2a iteracao
 def modelo2(lista,t,u):
     x = lista[0]
     y = lista[1]
@@ -95,3 +92,17 @@ plt.grid()
 plt.axis('equal')
 plt.legend()
 plt.show()
+
+
+#ALTURA MÁXIMA DO BLOCO (COM E SEM ATRITO)
+def ymax( lista_x, lista_y ):
+    for i in range( len( lista_x ) ):
+        if lista_x[i] > R*sqrt(2)/2 and lista_y[i] > lista_y[i-1] and lista_y[i] > lista_y[i+1]:
+            return lista_y[i]
+            break
+
+print("Sem atrito:")
+print( ymax( lista_x, lista_y ) )
+print("Com atrito:")
+print( ymax( lista_x2, lista_y2 ) )
+
